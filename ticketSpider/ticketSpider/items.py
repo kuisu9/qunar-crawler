@@ -22,6 +22,7 @@ class TicketspiderItem(scrapy.Item):
     score = scrapy.Field()
     desc = scrapy.Field()
     pic_url = scrapy.Field()
+    comment = scrapy.Field()
 
     def save_to_es(item):
         qunar = qunarType()
@@ -33,10 +34,13 @@ class TicketspiderItem(scrapy.Item):
         qunar.level = item['level']
         qunar.price = item['price']
         qunar.count = item['count']
+        qunar.intro = item['intro']
         qunar.img_url = item['img_url']
         qunar.detail_url = item['detail_url']
         qunar.score = item['score']
         qunar.desc = item['desc']
+        qunar.pic_url = item['pic_url']
+        qunar.comment = item['comment']
         qunar.save()
         return
     pass

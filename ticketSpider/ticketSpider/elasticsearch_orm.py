@@ -1,6 +1,6 @@
-
 from datetime import datetime
-from elasticsearch_dsl import Document, Date, Nested, Boolean, analyzer, Completion, Keyword, Text, Integer, Double
+from elasticsearch_dsl import Document, Date, Nested, Boolean, analyzer, Completion, Keyword, Text, Integer, Double, \
+    Object
 from elasticsearch_dsl.connections import connections
 
 # 导入连接elasticsearch(搜索引擎)服务器方法
@@ -14,12 +14,15 @@ class qunarType(Document): # 相当于mappings映射
     point = Text()
     sight = Text()
     level = Text()
-    price = Integer()
+    price = Double()
     count = Integer()
+    intro = Text()
     img_url = Text()
     detail_url = Text()
     score = Double()
     desc = Text()
+    pic_url = Text()
+    comment = Text()
 
     class Index:
         # 数据库名称和表名称
