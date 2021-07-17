@@ -17,18 +17,20 @@ class QunarSpider(scrapy.Spider):
             item['id'] = sight_item.css('::attr(data-id)').extract_first()
             item['area'] = sight_item.css('::attr(data-districts)').extract_first()
             item['address'] = sight_item.css('::attr(data-address)').extract_first()
-            item['point'] = sight_item.css('::attr(data-point)').extract_first()
+            point = sight_item.css('::attr(data-point)').extract_first()
+            item['lon'] = float(point.split(',')[0])
+            item['lat'] = float(point.split(',')[1])
             item['sight'] = sight_item.css('::attr(data-sight-name)').extract_first()
             item['level'] = sight_item.css('.level::text').extract_first()
             item['price'] = sight_item.css('.sight_item_price em::text').extract_first()
             item['count'] = sight_item.css('::attr(data-sale-count)').extract_first()
             item['intro'] = sight_item.xpath(".//div[@class='intro color999']/@title").extract_first()
             item['img_url'] = sight_item.css('::attr(data-sight-img-u-r-l)').extract_first()
-            item['detail_url'] = self.basesite + sight_item.xpath(".//h3[@class='sight_item_caption']/a/@href").extract_first()
-            if item["detail_url"]:
+            detail_url = self.basesite + sight_item.xpath(".//h3[@class='sight_item_caption']/a/@href").extract_first()
+            if detail_url:
                 # 请求详情页
                 yield scrapy.Request(
-                    item["detail_url"],
+                    detail_url,
                     callback=self.parse_detail,
                     meta={"item": item}
                 )
@@ -59,10 +61,33 @@ class QunarSpider(scrapy.Spider):
     def parse_comment_request(self, response):
         item = response.meta["item"]
         myjson = json.loads(response.text)
-        total_comment = ""
-        for comment in myjson["data"]["commentList"]:
-            total_comment += comment["content"]
-        item["comment"] = total_comment
         # total_comment里面存的是string 要新建一个comment域，比如item["comment"]
+        item["comment"] = ""
+        for comment in myjson["data"]["commentList"]:
+            item["comment"] += comment["content"]
+        item["tag"] = ""
+        item["total"] = item["praise"] = item["medium"] = item["critic"] = 0
+        for tag in myjson["data"]["tagList"]:
+            if tag["tagType"] != 0 and tag["tagType"] != 1 and tag["tagType"] != 2 and tag["tagType"] != 3:
+                item["tag"] += tag["tagName"]
+            if tag["tagType"] == 0:
+                item["total"] = tag["tagNum"]
+            if tag["tagType"] == 1:
+                item["praise"] = tag["tagNum"]
+            if tag["tagType"] == 2:
+                item["medium"] = tag["tagNum"]
+            if tag["tagType"] == 3:
+                item["critic"] = tag["tagNum"]
+        url = "https://piao.qunar.com/ticket/detail/recommendSight.json?sightId=" + item['id'] + "&longitude=" + str(item["lon"]) + "&latitude=" + str(item["lat"])
+        yield Request(url=url, callback=self.parse_recommend_request, meta={"item": item})
+
+    def parse_recommend_request(self, response):
+        item = response.meta["item"]
+        recommendjson = json.loads(response.text)
+        item["recommend"] = ""
+        for recommend in recommendjson["data"]:
+            item["recommend"] += recommend["id"] + ","
+
+
         yield item  # 对返回的数据进行处理
 
