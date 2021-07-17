@@ -6,7 +6,6 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-from scrapy_fake_useragent.middleware import RandomUserAgentMiddleware
 
 BOT_NAME = 'ticketSpider'
 
@@ -14,14 +13,12 @@ SPIDER_MODULES = ['ticketSpider.spiders']
 NEWSPIDER_MODULE = 'ticketSpider.spiders'
 
 DOWNLOADER_MIDDLEWARES = {
+    # 关闭默认方法
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    # 开启
     'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
 }
 
-
-DOWNLOAD_HANDLERS = {
-  's3': None,
-}
 
 ITEM_PIPELINES = {
     'ticketSpider.pipelines.TicketspiderPipeline': 300,
