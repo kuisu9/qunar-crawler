@@ -1,3 +1,5 @@
-Scrapy==2.5.0
+scrapy_fake_useragent==1.4.4
 itemadapter==0.2.0
+fake_useragent==0.1.11
+Scrapy==2.5.0
 elasticsearch_dsl==7.3.0
