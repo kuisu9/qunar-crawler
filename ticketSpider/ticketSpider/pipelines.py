@@ -7,13 +7,12 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from .elasticsearch_orm import qunarType
-
 import csv
 
 class TicketspiderPipeline(object):
     def __init__(self):
         self.f = open('ticker.csv', 'w', encoding='utf-8', newline='')
-        self.fieldnames = ['id', 'area', 'address', 'point', 'sight', 'level', 'price', 'count', 'intro', 'img_url', 'detail_url','score', 'desc', 'pic_url', 'comment']
+        self.fieldnames = ['id', 'area', 'address', 'point', 'sight', 'level', 'price', 'count', 'intro', 'img_url', 'detail_url','score', 'desc', 'open_time', "tips", "traffic", 'pic_url', 'comment']
         self.writer = csv.DictWriter(self.f, fieldnames=self.fieldnames)
         self.writer.writeheader()
     def process_item(self, item, spider):

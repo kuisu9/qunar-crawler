@@ -4,9 +4,18 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from fake_useragent import UserAgent
+from scrapy_fake_useragent.middleware import RandomUserAgentMiddleware
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
+
+class UserAgentMiddleware(object):
+    def __init__(self):
+        location = './fake_useragent_0.1.11.json'
+        self.UserAgent(path=location)
+    def process_request(self, request, spider):
+        request.headers['User-Agent'] = self.ua.random
 
 
 class TicketspiderSpiderMiddleware:
