@@ -8,7 +8,7 @@ connections.create_connection(hosts=["127.0.0.1"],timeout=60) # hosts允许连�
 
 
 class qunarType(Document): # 相当于mappings映射
-    id = Text()
+    id = Keyword()
     area = Text()
     address = Text()
     point = Text()
@@ -21,6 +21,9 @@ class qunarType(Document): # 相当于mappings映射
     detail_url = Text()
     score = Double()
     desc = Text()
+    open_time = Text()
+    tips = Text()
+    traffic = Text()
     pic_url = Text()
     comment = Text()
 

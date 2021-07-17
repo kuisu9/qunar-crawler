@@ -8,7 +8,7 @@ class QunarSpider(scrapy.Spider):
     basesite = 'https://piao.qunar.com'
     name = 'qunar'
     allowed_domains = ['piao.qunar.com']
-    start_urls = ['https://piao.qunar.com/ticket/list.htm?keyword=%E6%B5%99%E6%B1%9F']
+    start_urls = ['https://piao.qunar.com/ticket/list.htm?keyword=shijiazhuang']
 
     def parse(self, response):
         sight_items = response.css('#search-list .sight_item')
@@ -49,6 +49,9 @@ class QunarSpider(scrapy.Spider):
         desc = ''.join(response.xpath("//div[@class = 'mp-charact-intro']//text()").extract())
         item["desc"] = desc.strip()
         item["pic_url"] = ''.join(response.xpath("//div[@class ='mp-description-image']/img/@src").extract())
+        item["open_time"] = ''.join(response.xpath("//div[@class = 'mp-charact-time']//text()").extract()).strip()
+        item["tips"] = ''.join(response.xpath("//div[@class = 'mp-littletips-desc']//text()").extract()).strip()
+        item["traffic"] = ''.join(response.xpath("//div[@class = 'mp-traffic-transfer']//text()").extract()).strip()
         url = "https://piao.qunar.com/ticket/detailLight/sightCommentList.json?sightId=" + item['id'] + \
               "&index=1&page=1&pageSize=10&tagType=0"
         yield Request(url=url, callback=self.parse_comment_request, meta={"item": item})

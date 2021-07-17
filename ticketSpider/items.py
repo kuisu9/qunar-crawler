@@ -21,6 +21,9 @@ class TicketspiderItem(scrapy.Item):
     detail_url = scrapy.Field()
     score = scrapy.Field()
     desc = scrapy.Field()
+    open_time = scrapy.Field()
+    tips = scrapy.Field()
+    traffic = scrapy.Field()
     pic_url = scrapy.Field()
     comment = scrapy.Field()
 
@@ -39,6 +42,9 @@ class TicketspiderItem(scrapy.Item):
         qunar.detail_url = item['detail_url']
         qunar.score = item['score']
         qunar.desc = item['desc']
+        qunar.open_time = item['open_time']
+        qunar.tips = item['tips']
+        qunar.traffic = item['traffic']
         qunar.pic_url = item['pic_url']
         qunar.comment = item['comment']
         qunar.save()
