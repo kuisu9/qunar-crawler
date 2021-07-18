@@ -51,9 +51,12 @@ class QunarSpider(scrapy.Spider):
         desc = ''.join(response.xpath("//div[@class = 'mp-charact-intro']//text()").extract())
         item["desc"] = desc.strip()
         item["pic_url"] = ''.join(response.xpath("//div[@class ='mp-description-image']/img/@src").extract())
-        item["open_time"] = ''.join(response.xpath("//div[@class = 'mp-charact-time']//text()").extract()).strip()
-        item["tips"] = ''.join(response.xpath("//div[@class = 'mp-littletips-desc']//text()").extract()).strip()
-        item["traffic"] = ''.join(response.xpath("//div[@class = 'mp-traffic-transfer']//text()").extract()).strip()
+        item["open_time"] = ''.join(response.xpath("//*[@id='mp-charact']/div//div[@class='mp-charact-time']/div/div[@class='mp-charact-desc']/p/text()").extract()).strip()
+        item["open_time"] = item["open_time"].replace('；', '；\n')
+        item["tips"] = ''.join(response.xpath("//*[@id='mp-charact']/div[@class='mp-charact-littletips']//div[@class='mp-littletips-item']//text()").extract()).strip()
+        item["tips"] = (((item["tips"].replace(' ','')).replace('\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n','\n')).replace('\r\n\r\n\r\n\r\n\r\n',':'))
+        item["traffic"] = ''.join(response.xpath("//*[@id='mp-traffic']/div[@class='mp-traffic-transfer']//text()").extract()).strip()
+        item["traffic"] = (((item["traffic"].replace(' ', '')).replace('\r\n\r\n\r\n\r\n', '\n')).replace('\r\n\r\n', ':'))
         url = "https://piao.qunar.com/ticket/detailLight/sightCommentList.json?sightId=" + item['id'] + \
               "&index=1&page=1&pageSize=10&tagType=0"
         yield Request(url=url, callback=self.parse_comment_request, meta={"item": item})
