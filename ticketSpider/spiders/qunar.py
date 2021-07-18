@@ -57,6 +57,7 @@ class QunarSpider(scrapy.Spider):
         item["tips"] = (((item["tips"].replace(' ','')).replace('\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n','\n')).replace('\r\n\r\n\r\n\r\n\r\n',':'))
         item["traffic"] = ''.join(response.xpath("//*[@id='mp-traffic']/div[@class='mp-traffic-transfer']//text()").extract()).strip()
         item["traffic"] = (((item["traffic"].replace(' ', '')).replace('\r\n\r\n\r\n\r\n', '\n')).replace('\r\n\r\n', ':'))
+        ''.join(response.xpath("//*[@id='mp-traffic']/dl[@id='mp-traffic-stations']//dd/a/text()").extract()).strip()
         url = "https://piao.qunar.com/ticket/detailLight/sightCommentList.json?sightId=" + item['id'] + \
               "&index=1&page=1&pageSize=10&tagType=0"
         yield Request(url=url, callback=self.parse_comment_request, meta={"item": item})
@@ -90,7 +91,12 @@ class QunarSpider(scrapy.Spider):
         item["recommend"] = ""
         for recommend in recommendjson["data"]:
             item["recommend"] += recommend["id"] + ","
+        url = "https://piao.qunar.com/ticket/detail/getTickets.json?sightId=" + item['id']
+        yield Request(url=url, callback=self.parse_ticket_request, meta={"item": item})
 
-
+    def parse_ticket_request(self, response):
+        item = response.meta["item"]
+        ticketjson = json.loads(response.text)
+        item["ticket"] = ticketjson["data"]
         yield item  # 对返回的数据进行处理
 

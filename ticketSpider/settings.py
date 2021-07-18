@@ -21,7 +21,6 @@ DOWNLOADER_MIDDLEWARES = {
 
 
 ITEM_PIPELINES = {
-    'ticketSpider.pipelines.TicketspiderPipeline': 300,
     'ticketSpider.pipelines.ElasticsearchPipeline': 300,
 }
 
