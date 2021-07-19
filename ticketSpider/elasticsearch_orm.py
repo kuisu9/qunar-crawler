@@ -31,7 +31,7 @@ class qunarType(Document): # 相当于mappings映射
     medium = Integer()
     critic = Integer()
     recommend = Text()
-    ticket = Nested()
+    #ticket = Nested()
 
     class Index:
         # 数据库名称和表名称
