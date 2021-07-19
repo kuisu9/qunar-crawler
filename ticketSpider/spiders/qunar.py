@@ -51,13 +51,16 @@ class QunarSpider(scrapy.Spider):
         desc = ''.join(response.xpath("//div[@class = 'mp-charact-intro']//text()").extract())
         item["desc"] = desc.strip()
         item["pic_url"] = (''.join(response.xpath("//div[@class ='mp-description-image']/img/@src").extract())).split('https://')
+        item["pic_url"].remove('')
         item["open_time"] = ''.join(response.xpath("//*[@id='mp-charact']/div//div[@class='mp-charact-time']/div/div[@class='mp-charact-desc']/p/text()").extract()).strip()
         item["open_time"] = item["open_time"].replace('；', '；\n')
         item["tips"] = ''.join(response.xpath("//*[@id='mp-charact']/div[@class='mp-charact-littletips']//div[@class='mp-littletips-item']//text()").extract()).strip()
         item["tips"] = (((item["tips"].replace(' ','')).replace('\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n','kk')).replace('\r\n\r\n\r\n\r\n\r\n',':'))
+        item['tips'] = ((item["tips"].replace(':',':\n')).replace('；','；\n'))
         item["tips"] = item["tips"].split('kk')
         item["traffic"] = (''.join(response.xpath("//*[@id='mp-traffic']/div[@class='mp-traffic-transfer']//text()").extract()).strip())
         item["traffic"] = (((item["traffic"].replace(' ', '')).replace('\r\n\r\n\r\n\r\n', 'kk')).replace('\r\n\r\n', ':'))
+        item['traffic'] = ((item["traffic"].replace(':', ':\n')).replace('；', '；\n'))
         item["traffic"] = item["traffic"].split('kk')
         ''.join(response.xpath("//*[@id='mp-traffic']/dl[@id='mp-traffic-stations']//dd/a/text()").extract()).strip()
         url = "https://piao.qunar.com/ticket/detailLight/sightCommentList.json?sightId=" + item['id'] + \
@@ -94,6 +97,7 @@ class QunarSpider(scrapy.Spider):
         for recommend in recommendjson["data"]:
             item["recommend"] += recommend["id"] + ","
         item["recommend"] = item["recommend"].split(',')
+        item["recommend"].remove('')
         #url = "https://piao.qunar.com/ticket/detail/getTickets.json?sightId=" + item['id']
         #yield Request(url=url, callback=self.parse_ticket_request, meta={"item": item})
 
