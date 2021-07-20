@@ -8,11 +8,11 @@ connections.create_connection(hosts=["127.0.0.1"],timeout=60) # hosts允许连�
 
 class qunarType(Document): # 相当于mappings映射
     id = Keyword()
-    area = Text(analyzer = 'ik_max_word')
+    area = Text(analyzer = 'ik_max_word',search_analyzer = 'ik_smart')
     address = Text()
     lon = Double()
     lat = Double()
-    sight = Text(analyzer = 'ik_max_word')
+    sight = Text(analyzer = 'ik_max_word',search_analyzer = 'ik_smart')
     level = Text()
     price = Double()
     count = Integer()
