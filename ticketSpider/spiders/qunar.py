@@ -1,14 +1,21 @@
-import re
 import json
 from scrapy import Request
 import scrapy
 from ticketSpider.items import TicketspiderItem
+import demjson
+from scrapy_redis.spiders import RedisCrawlSpider
 
 class QunarSpider(scrapy.Spider):
     basesite = 'https://piao.qunar.com'
     name = 'qunar'
     allowed_domains = ['piao.qunar.com']
-    start_urls = ['https://piao.qunar.com/ticket/list.htm?keyword=zhongguo']
+    start_urls = [#'https://piao.qunar.com/ticket/list.htm?keyword=北京&region=&from=mpl_search_suggest&sort=pp&page=1',
+                  #'https://piao.qunar.com/ticket/list.htm?keyword=河北&region=&from=mpl_search_suggest&sort=pp&page=1',
+                  #'https://piao.qunar.com/ticket/list.htm?keyword=浙江&region=&from=mpl_search_suggest&sort=pp&page=1',
+                  #'https://piao.qunar.com/ticket/list.htm?keyword=广东&region=&from=mpl_search_suggest&sort=pp&page=1',
+                  #'https://piao.qunar.com/ticket/list.htm?keyword=广西&region=&from=mpl_search_suggest&sort=pp&page=1',
+                  'https://piao.qunar.com/ticket/list.htm?keyword=山东&region=&from=mpl_search_suggest&sort=pp&page=1']
+    #redis_key = 'Ticketspider:start_urls'
 
     def parse(self, response):
         sight_items = response.css('#search-list .sight_item')
@@ -34,14 +41,16 @@ class QunarSpider(scrapy.Spider):
                     callback=self.parse_detail,
                     meta={"item": item}
                 )
+
         #翻页
         #next_url = response.css('.next::attr(href)').extract_first()
-        #if next_url:
-        #    next_url = "https://piao.qunar.com" + next_url
-        #    yield scrapy.Request(
-        #        next_url,
-        #        callback=self.parse
-        #    )
+        next_url = response.xpath("//a[@class='next']/@href").extract_first()
+        if next_url:
+            next_url = "https://piao.qunar.com" + next_url
+            yield scrapy.Request(
+                next_url,
+                callback=self.parse
+            )
 
     # 解析详情页
     def parse_detail(self, response):
@@ -62,7 +71,6 @@ class QunarSpider(scrapy.Spider):
         item["traffic"] = (((item["traffic"].replace(' ', '')).replace('\r\n\r\n\r\n\r\n', 'kk')).replace('\r\n\r\n', ':'))
         item['traffic'] = ((item["traffic"].replace(':', ':\n')).replace('；', '；\n'))
         item["traffic"] = item["traffic"].split('kk')
-        ''.join(response.xpath("//*[@id='mp-traffic']/dl[@id='mp-traffic-stations']//dd/a/text()").extract()).strip()
         url = "https://piao.qunar.com/ticket/detailLight/sightCommentList.json?sightId=" + item['id'] + \
               "&index=1&page=1&pageSize=10&tagType=0"
         yield Request(url=url, callback=self.parse_comment_request, meta={"item": item})
@@ -98,12 +106,23 @@ class QunarSpider(scrapy.Spider):
             item["recommend"] += recommend["id"] + ","
         item["recommend"] = item["recommend"].split(',')
         item["recommend"].remove('')
+        item["recommend1"] = recommendjson["data"][0]
+        item["recommend2"] = recommendjson["data"][1]
+        item["recommend3"] = recommendjson["data"][2]
+        item["recommend4"] = recommendjson["data"][3]
+        item["recommend5"] = recommendjson["data"][4]
+        item["recommend6"] = recommendjson["data"][5]
+        item["recommend7"] = recommendjson["data"][6]
+        item["recommend8"] = recommendjson["data"][7]
+
         #url = "https://piao.qunar.com/ticket/detail/getTickets.json?sightId=" + item['id']
         #yield Request(url=url, callback=self.parse_ticket_request, meta={"item": item})
 
     #def parse_ticket_request(self, response):
         #item = response.meta["item"]
         #ticketjson = json.loads(response.text)
+        #item["ticket"] = {}
         #item["ticket"] = ticketjson["data"]["recommendTicketList"]
         yield item  # 对返回的数据进行处理
+
 
