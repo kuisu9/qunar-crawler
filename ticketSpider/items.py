@@ -32,6 +32,14 @@ class TicketspiderItem(scrapy.Item):
     medium = scrapy.Field()
     critic = scrapy.Field()
     recommend = scrapy.Field()
+    recommend1 = scrapy.Field()
+    recommend2 = scrapy.Field()
+    recommend3 = scrapy.Field()
+    recommend4 = scrapy.Field()
+    recommend5 = scrapy.Field()
+    recommend6 = scrapy.Field()
+    recommend7 = scrapy.Field()
+    recommend8 = scrapy.Field()
     #ticket = scrapy.Field()
 
     def save_to_es(item):
@@ -60,6 +68,14 @@ class TicketspiderItem(scrapy.Item):
         qunar.medium = item['medium']
         qunar.critic = item['critic']
         qunar.recommend = item['recommend']
+        qunar.recommend1 = item['recommend1']
+        qunar.recommend2 = item['recommend2']
+        qunar.recommend3 = item['recommend3']
+        qunar.recommend4 = item['recommend4']
+        qunar.recommend5 = item['recommend5']
+        qunar.recommend6 = item['recommend6']
+        qunar.recommend7 = item['recommend7']
+        qunar.recommend8 = item['recommend8']
         #qunar.ticket = item['ticket']
         qunar.save()
         return

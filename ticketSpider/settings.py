@@ -22,6 +22,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 ITEM_PIPELINES = {
     'ticketSpider.pipelines.ElasticsearchPipeline': 300,
+    'scrapy_redis.pipelines.RedisPipeline': 300
 }
 
 
@@ -82,7 +83,7 @@ COOKIES_ENABLED = False
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 10
 # The maximum download delay to be set in case of high latencies
 AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
@@ -98,3 +99,20 @@ AUTOTHROTTLE_DEBUG = False
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+HTTPERROR_ALLOWED_CODES  =[404]
+
+# Enables scheduling storing requests queue in redis.
+#SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+
+# Ensure all spiders share same duplicates filter through redis.
+#DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+
+# Enables stats shared based on Redis
+#STATS_CLASS = "scrapy_redis.stats.RedisStatsCollector"
+
+
+#允许继续爬取
+#SCHEDULER_PERSIST = True
+#设置优先级
+#SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderPriorityQueue'
+#REDIS_PARAMS = {'host': 'localhost', 'port': '6379'}

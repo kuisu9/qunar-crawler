@@ -31,6 +31,14 @@ class qunarType(Document): # 相当于mappings映射
     medium = Integer()
     critic = Integer()
     recommend = Text()
+    recommend1 = Nested()
+    recommend2 = Nested()
+    recommend3 = Nested()
+    recommend4 = Nested()
+    recommend5 = Nested()
+    recommend6 = Nested()
+    recommend7 = Nested()
+    recommend8 = Nested()
     #ticket = Nested()
 
     class Index:
