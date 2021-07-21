@@ -1,28 +1,25 @@
 from datetime import datetime
-from elasticsearch_dsl import Document, Date, Nested, Boolean, analyzer, analysis, Completion, Keyword, Text, Integer, Double, Object
+from elasticsearch_dsl import Document, Nested, search, analyzer, analysis, Completion, Keyword, Text, Integer, Double, Object
 from elasticsearch_dsl.connections import connections
 
 # 导入连接elasticsearch(搜索引擎)服务器方法
 connections.create_connection(hosts=["127.0.0.1"],timeout=60) # hosts允许连接多个服务器
 
-my_pinyin = analysis.token_filter('ik_max_word_pinyin',
-                                  type = "pinyin",
-)
-ik_max_word_pinyin = analyzer('ik_max_word_pinyin',
+my_pinyin = analysis.token_filter('ik_smart_pinyin',
+                                  type = "pinyin",)
+ik_smart_pinyin = analyzer('ik_smart_pinyin',
                               type = "custom",
-                              tokenizer="ik_max_word",
-                              filter=[my_pinyin],
-)
-
-
+                              tokenizer="ik_smart",
+                              filter=[my_pinyin],)
+ik_smart = analyzer('ik_smart')
 
 class qunarType(Document): # 相当于mappings映射
     id = Keyword()
-    area = Text(analyzer = ik_max_word_pinyin)
+    area = Text(analyzer = ik_smart)
     address = Text()
     lon = Double()
     lat = Double()
-    sight = Text(analyzer = ik_max_word_pinyin)
+    sight = Text(analyzer = ik_smart_pinyin)
     level = Text()
     price = Double()
     count = Integer()
